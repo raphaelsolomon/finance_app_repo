@@ -1,0 +1,2 @@
+/Users/wazobia10/Documents/personal/finance_app_repo/android/app/.cxx/RelWithDebInfo/5e5n2e5p/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/wazobia10/Documents/personal/finance_app_repo/android/app/.cxx/RelWithDebInfo/5e5n2e5p/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,2 @@
+/Users/wazobia10/Documents/personal/finance_app_repo/android/app/.cxx/RelWithDebInfo/5e5n2e5p/x86_64/CMakeFiles/edit_cache.dir
+/Users/wazobia10/Documents/personal/finance_app_repo/android/app/.cxx/RelWithDebInfo/5e5n2e5p/x86_64/CMakeFiles/rebuild_cache.dir
