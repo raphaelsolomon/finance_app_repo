@@ -37,8 +37,10 @@ class DashboardHeader extends ConsumerWidget {
                   Container(
                     width: double.infinity,
                     height: 30.h,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 10.h,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.primaryContainer.withOpacity(1.5.sp),
                       borderRadius: BorderRadius.vertical(

@@ -28,8 +28,10 @@ class HomePage extends ConsumerWidget {
             return CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child:
-                      SizedBox(height: 52.h, child: DashboardHeader(pageCntrl)),
+                  child: SizedBox(
+                    height: 52.h,
+                    child: DashboardHeader(pageCntrl),
+                  ),
                 ),
                 SliverToBoxAdapter(
                   child: Padding(

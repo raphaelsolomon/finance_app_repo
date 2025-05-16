@@ -194,7 +194,7 @@ class NoDataView extends StatelessWidget {
 }
 
 String getUserName() {
-  String lastName = '';
+  String lastName = 'Guest User';
   var userDetails = FirebaseAuth.instance.currentUser;
   if (userDetails != null && userDetails.displayName != null) {
     List<String> nameParts = userDetails.displayName!.split(' ');

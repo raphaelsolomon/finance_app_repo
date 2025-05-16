@@ -81,4 +81,18 @@ class AuthDataSource {
       return left(e.message);
     }
   }
+
+  Future<Either<String, User>> anonymousLogin() async {
+    try {
+      final response = await _firebaseAuth.signInAnonymously();
+      return right(response.user!);
+    } on FirebaseAuthException catch (e) {
+      debugPrint(e.message);
+      return left(e.message ?? 'Unknow Error');
+    } on PlatformException catch (e) {
+      debugPrint(e.message);
+
+      return left(e.message ?? 'sign_in_failed');
+    }
+  }
 }

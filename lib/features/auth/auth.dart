@@ -116,6 +116,43 @@ class AuthScreen extends HookConsumerWidget {
                             ],
                           ),
                         ),
+                      ),
+                      Gap(2.h),
+                      GestureDetector(
+                        onTap: () => ref
+                            .read(authNotifierProvider.notifier)
+                            .continueWithGuest(),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8.0,
+                            horizontal: 10.0,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColor.kWhitColor,
+                              width: 0.4.w,
+                            ),
+                            borderRadius: BorderRadius.circular(10.sp),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              LineIcon.user(
+                                color: AppColor.kWhitColor,
+                                size: 19.sp,
+                              ),
+                              Gap(2.w),
+                              Text(
+                                'Guest Login',
+                                style: TextStyle(
+                                  color: AppColor.kWhitColor,
+                                  fontSize: 16.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       )
                     ]),
               )),

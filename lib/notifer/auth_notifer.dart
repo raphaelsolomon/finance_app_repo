@@ -38,7 +38,14 @@ class AuthNotifier extends StateNotifier<AuthenticationState> {
     );
   }
 
- 
+  Future<void> continueWithGuest() async {
+    state = const AuthenticationState.loading();
+    final response = await _dataSource.anonymousLogin();
+    state = response.fold(
+      (error) => AuthenticationState.unauthenticated(message: error),
+      (response) => AuthenticationState.authenticated(user: response),
+    );
+  }
 }
 
 final authNotifierProvider =
