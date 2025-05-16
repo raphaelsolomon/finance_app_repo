@@ -1,0 +1,115 @@
+workflows:
+  android-workflow:
+    name: Flutter Android
+    instance_type: mac_mini_m1
+    max_build_duration: 80
+    environment:
+      flutter: stable
+      groups:
+        - android_signing # for app signing
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - ~/.pub-cache
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+          source: true
+      cancel_previous_builds: true
+    scripts:
+      - name: Create .env file
+        script: |
+          # Create .env file by transforming ENV_ variables
+          echo "# .env file created by Codemagic" > "$CM_BUILD_DIR/.env"
+          
+          # Find all environment variables that start with ENV_ and add to .env
+          env | grep "^ENV_" | while read -r line; do
+            # Extract the key and value
+            key=$(echo "$line" | cut -d '=' -f 1)
+            value=$(echo "$line" | cut -d '=' -f 2-)
+            
+            # Remove the ENV_ prefix for the .env file
+            key_without_prefix=${key#ENV_}
+            
+            # Add to .env file
+            echo "$key_without_prefix=$value" >> "$CM_BUILD_DIR/.env"
+          done
+          
+          # Show the created .env file (redacted for security)
+          echo "Created .env file with these variables:"
+          cat "$CM_BUILD_DIR/.env" | sed 's/\(.*=\).*/\1********/'
+          
+          # Verify the file exists
+          echo "Verifying .env file exists in project root:"
+          ls -la "$CM_BUILD_DIR/"
+      - name: Set up local properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      - name: Set up keystore
+        script: |
+          # Create a new keystore directly using keytool
+          keytool -genkey -v -keystore /tmp/keystore.keystore -alias $CM_KEY_ALIAS \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass $CM_KEYSTORE_PASSWORD -keypass $CM_KEY_PASSWORD \
+            -dname "CN=SB Finance, OU=Development, O=SB Finance, L=LG, S=LG, C=NG"
+          
+          # Make sure to set the CM_KEYSTORE_PATH environment variable
+          export CM_KEYSTORE_PATH=/tmp/keystore.keystore
+          
+          # Create key.properties file for Flutter app
+          echo "storePassword=$CM_KEYSTORE_PASSWORD" > $CM_BUILD_DIR/android/key.properties
+          echo "keyPassword=$CM_KEY_PASSWORD" >> $CM_BUILD_DIR/android/key.properties
+          echo "keyAlias=$CM_KEY_ALIAS" >> $CM_BUILD_DIR/android/key.properties
+          echo "storeFile=/tmp/keystore.keystore" >> $CM_BUILD_DIR/android/key.properties
+
+      - name: Build APK with Flutter
+        script: |
+          VERSION_CODE=$((1 + $(git rev-list --count HEAD)))
+          VERSION_NAME="1.0.$VERSION_CODE"
+          
+          # Make sure the .env file exists before building
+          if [ ! -f "$CM_BUILD_DIR/.env" ]; then
+            echo "ERROR: .env file does not exist!"
+            exit 1
+          fi
+          
+          # List contents of directory to verify .env file is present
+          ls -la "$CM_BUILD_DIR/"
+          
+          # Build the universal APK - Flutter will use the key.properties file for signing
+          flutter build apk --release \
+            --build-number=$VERSION_CODE \
+            --build-name=$VERSION_NAME
+          
+          # Verify the APK was built
+          if [ ! -f build/app/outputs/flutter-apk/app-release.apk ]; then
+            echo "ERROR: APK was not built successfully!"
+            exit 1
+          fi
+          
+          # Verify the signature directly without trying to re-sign
+          echo "Verifying APK was properly signed..."
+          
+          # Find the latest build tools
+          ANDROID_BUILD_TOOLS=$(find "$ANDROID_SDK_ROOT/build-tools" -maxdepth 1 -mindepth 1 -type d | sort -r | head -n 1)
+          echo "Using build tools at $ANDROID_BUILD_TOOLS"
+          
+          # Just verify without signing again
+          $ANDROID_BUILD_TOOLS/apksigner verify --verbose build/app/outputs/flutter-apk/app-release.apk
+          
+    artifacts:
+      - build/**/outputs/apk/**/*.apk
+      - build/**/outputs/**/mapping.txt
+    publishing:
+      email:
+        recipients:
+          - phoenixk54@gmail.com
+        notify:
+          success: true
+          failure: true
