@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "760108775186",
-    "project_id": "expensetracker-12157",
-    "storage_bucket": "expensetracker-12157.appspot.com"
+    "project_number": "168181594495",
+    "project_id": "expenses-c9a0a",
+    "storage_bucket": "expenses-c9a0a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:760108775186:android:bddbd7d1f145a5d725a5cb",
+        "mobilesdk_app_id": "1:168181594495:android:fe05a97133478f2073024a",
         "android_client_info": {
-          "package_name": "com.example.expense_app"
+          "package_name": "com.seyibomba.expense_app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB3-LjRNOTTmAp19vy02pcegzGmzQoxsdI"
+          "current_key": "AIzaSyB8suAkkDXZ-CovTTkF3WyDahAmPNcT7Mg"
         }
       ],
       "services": {
