@@ -68,7 +68,7 @@ workflows:
           echo "keyAlias=$CM_KEY_ALIAS" >> $CM_BUILD_DIR/android/key.properties
           echo "storeFile=/tmp/keystore.keystore" >> $CM_BUILD_DIR/android/key.properties
 
-      - name: Build APK with Flutter
+      - name: Build APK and App Bundle with Flutter
         script: |
           VERSION_CODE=$((1 + $(git rev-list --count HEAD)))
           VERSION_NAME="1.0.$VERSION_CODE"
@@ -83,6 +83,7 @@ workflows:
           ls -la "$CM_BUILD_DIR/"
           
           # Build the universal APK - Flutter will use the key.properties file for signing
+          echo "Building APK..."
           flutter build apk --release \
             --build-number=$VERSION_CODE \
             --build-name=$VERSION_NAME
@@ -93,6 +94,18 @@ workflows:
             exit 1
           fi
           
+          # Build the App Bundle (AAB)
+          echo "Building App Bundle..."
+          flutter build appbundle --release \
+            --build-number=$VERSION_CODE \
+            --build-name=$VERSION_NAME
+          
+          # Verify the App Bundle was built
+          if [ ! -f build/app/outputs/bundle/release/app-release.aab ]; then
+            echo "ERROR: App Bundle was not built successfully!"
+            exit 1
+          fi
+          
           # Verify the signature directly without trying to re-sign
           echo "Verifying APK was properly signed..."
           
@@ -100,11 +113,12 @@ workflows:
           ANDROID_BUILD_TOOLS=$(find "$ANDROID_SDK_ROOT/build-tools" -maxdepth 1 -mindepth 1 -type d | sort -r | head -n 1)
           echo "Using build tools at $ANDROID_BUILD_TOOLS"
           
-          # Just verify without signing again
+          # Verify APK signature
           $ANDROID_BUILD_TOOLS/apksigner verify --verbose build/app/outputs/flutter-apk/app-release.apk
           
     artifacts:
       - build/**/outputs/apk/**/*.apk
+      - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/**/mapping.txt
     publishing:
       email:
