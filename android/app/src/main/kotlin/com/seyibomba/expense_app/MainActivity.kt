@@ -1,4 +1,4 @@
-package com.example.expense_app
+package com.seyibomba.expense_app
 
 
 import io.flutter.embedding.android.FlutterFragmentActivity
