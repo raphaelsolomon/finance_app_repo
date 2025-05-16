@@ -86,23 +86,32 @@ class AuthScreen extends HookConsumerWidget {
                             .read(authNotifierProvider.notifier)
                             .continueWithGoogle(),
                         child: Container(
-                          width: 45.w,
-                          padding: EdgeInsets.symmetric(vertical: 6.sp),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8.0,
+                            horizontal: 10.0,
+                          ),
                           decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: AppColor.kWhitColor, width: 0.4.w),
-                              borderRadius: BorderRadius.circular(10.sp)),
+                            border: Border.all(
+                              color: AppColor.kWhitColor,
+                              width: 0.4.w,
+                            ),
+                            borderRadius: BorderRadius.circular(10.sp),
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               LineIcon.googlePlay(
-                                  color: AppColor.kWhitColor, size: 19.sp),
+                                color: AppColor.kWhitColor,
+                                size: 19.sp,
+                              ),
                               Gap(2.w),
                               Text(
                                 'Continue with google',
                                 style: TextStyle(
-                                    color: AppColor.kWhitColor,
-                                    fontSize: 16.sp),
+                                  color: AppColor.kWhitColor,
+                                  fontSize: 16.sp,
+                                ),
                               ),
                             ],
                           ),

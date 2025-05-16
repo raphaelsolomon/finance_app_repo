@@ -73,8 +73,6 @@ android {
         debug {
             signingConfig signingConfigs.debug
             // Debug-specific configurations if needed
-            applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
         }
     }
 }
